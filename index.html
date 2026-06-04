@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Food Assistant - Dashboard แนะนำร้านอาหารกลุ่มใหญ่</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="glass-bg-glows">
+        <div class="glow glow-1"></div>
+        <div class="glow glow-2"></div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Header Section -->
+        <header class="main-header">
+            <div class="header-logo">
+                <i class="fa-solid fa-utensils logo-icon"></i>
+                <div class="logo-text">
+                    <h1>AI Food Assistant</h1>
+                    <p>ระบบค้นหาและจัดอันดับร้านอาหารสำหรับทีม (8-12 คน)</p>
+                </div>
+            </div>
+            <div class="header-meta">
+                <button id="btn-reload" class="btn btn-reload" title="ดึงข้อมูลใหม่จาก Google Sheets">
+                    <i class="fa-solid fa-arrows-rotate" id="reload-icon"></i> <span>รีโหลดข้อมูล</span>
+                </button>
+            </div>
+        </header>
+
+
+
+        <!-- District Selection Tabs -->
+        <section class="navigation-section">
+            <h2 class="nav-title"><i class="fa-solid fa-map-location-dot"></i> เลือกย่านพื้นที่ที่ต้องการค้นหา</h2>
+            <div class="tabs-container">
+                <button class="tab-btn active" data-district="Ari">
+                    <i class="fa-solid fa-leaf"></i> อารีย์ (Ari)
+                </button>
+                <button class="tab-btn" data-district="Siam">
+                    <i class="fa-solid fa-tags"></i> สยาม (Siam)
+                </button>
+                <button class="tab-btn" data-district="Thonglor">
+                    <i class="fa-solid fa-glass-cheers"></i> ทองหล่อ (Thonglor)
+                </button>
+                <button class="tab-btn" data-district="Asoke">
+                    <i class="fa-solid fa-building"></i> อโศก (Asoke)
+                </button>
+                <button class="tab-btn" data-district="Phrom Phong">
+                    <i class="fa-solid fa-gem"></i> พร้อมพงษ์ (Phrom Phong)
+                </button>
+                <button class="tab-btn" data-district="All">
+                    <i class="fa-solid fa-globe"></i> ทั้งหมด (All)
+                </button>
+            </div>
+            
+            <!-- Multi-faceted Filter Panel (Visible when 'All' tab is selected) -->
+            <div class="glass-card filter-panel" id="filter-panel" style="display: none; margin-top: 20px;">
+                <div class="filter-grid">
+                    <div class="filter-item">
+                        <label for="filter-district"><i class="fa-solid fa-map-pin"></i> ย่านพื้นที่</label>
+                        <select id="filter-district" class="filter-select">
+                            <option value="All">ทุกย่าน</option>
+                            <option value="Ari">อารีย์ (Ari)</option>
+                            <option value="Siam">สยาม (Siam)</option>
+                            <option value="Thonglor">ทองหล่อ (Thonglor)</option>
+                            <option value="Asoke">อโศก (Asoke)</option>
+                            <option value="Phrom Phong">พร้อมพงษ์ (Phrom Phong)</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="filter-category"><i class="fa-solid fa-utensils"></i> ประเภทอาหาร</label>
+                        <select id="filter-category" class="filter-select">
+                            <option value="All">ทุกประเภท</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="filter-scenario"><i class="fa-solid fa-lightbulb"></i> Scenario (ความเหมาะสม)</label>
+                        <select id="filter-scenario" class="filter-select">
+                            <option value="All">ทุกรูปแบบ</option>
+                            <option value="budget">💰 ราคาประหยัดสุด (ราคาต่อหัวน้อยสุด)</option>
+                            <option value="fast">⚡ บริการไว (รีบกิน รีบไป)</option>
+                            <option value="meeting">💬 คุยงานได้ (นั่งประชุมได้)</option>
+                            <option value="team">👥 เหมาะกับทีม (โต๊ะใหญ่ ร้านกว้าง)</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="filter-price"><i class="fa-solid fa-money-bill-wave"></i> ระดับราคา</label>
+                        <select id="filter-price" class="filter-select">
+                            <option value="All">ทุกระดับราคา</option>
+                            <option value="cheap">ประหยัด (฿100-฿300)</option>
+                            <option value="medium">ปานกลาง (฿300-฿600)</option>
+                            <option value="expensive">พรีเมียม (฿600+)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Top 3 Recommendations -->
+        <section class="recommendations-section">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-star text-gold animate-star"></i> แนะนำร้านอาหารยอดเยี่ยม 3 อันดับแรก (Top 3 Recommendations)</h2>
+                <p>วิเคราะห์ตามเกณฑ์ความเหมาะสมของกลุ่ม งบประมาณ และความสะดวกในการเดินทาง</p>
+            </div>
+            <div class="cards-grid" id="top-3-container">
+                <!-- Cards will be dynamically inserted here via JavaScript -->
+            </div>
+        </section>
+
+        <!-- Top 10 Ranking Table -->
+        <section class="ranking-section">
+            <div class="glass-card table-card">
+                <div class="table-header">
+                    <h2><i class="fa-solid fa-list-ol"></i> ตารางเปรียบเทียบจัดอันดับ Top 10</h2>
+                    <span class="badge badge-accent" id="results-count">พบ 10 ร้านค้าแนะนำ</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="ranking-table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">อันดับ</th>
+                                <th>ชื่อร้านอาหาร</th>
+                                <th>ประเภทอาหาร</th>
+                                <th class="text-center">คะแนนรวม</th>
+                                <th class="text-center">เรตติ้ง</th>
+                                <th class="text-center">รีวิว (ครั้ง)</th>
+                                <th class="text-center">ช่วงราคา</th>
+                                <th>คำแนะนำเพิ่มเติมและทำเลที่ตั้ง</th>
+                                <th class="text-center">แผนที่</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            <!-- Table rows will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detailed Comparison Section -->
+        <section class="comparison-section">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-scale-balanced"></i> ตารางประเมิน Trade-off (จุดเด่น และ ข้อควรระวัง)</h2>
+                <p>ข้อมูลสนับสนุนสำหรับประกอบการตัดสินใจของทีม</p>
+            </div>
+            <div class="comparison-grid" id="comparison-container">
+                <!-- Comparison cards will be inserted here -->
+            </div>
+        </section>
+
+        <!-- Tools Used & Scoring Criteria -->
+        <section class="details-grid-section">
+            <div class="glass-card criteria-card">
+                <h2><i class="fa-solid fa-clipboard-list"></i> เกณฑ์การให้คะแนนโมเดล (100 คะแนนเต็ม)</h2>
+                <ul class="criteria-list">
+                    <li>
+                        <div class="criteria-info">
+                            <strong>คุณภาพคะแนนและรีวิว (Rating & Reviews)</strong>
+                            <span>คำนวณจากคะแนน Google Maps และสัดส่วนปริมาณรีวิว</span>
+                        </div>
+                        <span class="criteria-weight">25 คะแนน</span>
+                    </li>
+                    <li>
+                        <div class="criteria-info">
+                            <strong>ความเหมาะสำหรับกลุ่มใหญ่ (Group Suitability)</strong>
+                            <span>ประเมินประเภทอาหาร ความกว้างขวาง และการจัดโต๊ะของร้าน</span>
+                        </div>
+                        <span class="criteria-weight">20 คะแนน</span>
+                    </li>
+                    <li>
+                        <div class="criteria-info">
+                            <strong>ความเหมาะสมของราคา (Price Suitability)</strong>
+                            <span>ช่วงราคากลางที่เหมาะสมกับงบประมาณของทีม (฿200-1,000)</span>
+                        </div>
+                        <span class="criteria-weight">15 คะแนน</span>
+                    </li>
+                    <li>
+                        <div class="criteria-info">
+                            <strong>ความสะดวกการเดินทาง (Travel Convenience)</strong>
+                            <span>ระยะห่างและทางเดินเชื่อมต่อจากสถานี BTS / MRT</span>
+                        </div>
+                        <span class="criteria-weight">15 คะแนน</span>
+                    </li>
+                    <li>
+                        <div class="criteria-info">
+                            <strong>ความครบถ้วนของข้อมูล (Data Completeness)</strong>
+                            <span>ข้อมูลเบอร์โทร, เว็บไซต์, เมนู และเวลาเปิดปิด</span>
+                        </div>
+                        <span class="criteria-weight">15 คะแนน</span>
+                    </li>
+                    <li>
+                        <div class="criteria-info">
+                            <strong>ความพิเศษของร้าน (Uniqueness/Experience)</strong>
+                            <span>การตกแต่งร้านที่ดี, วิวสวยงาม, หรือร้านระดับรางวัลรางวัลมิชลิน</span>
+                        </div>
+                        <span class="criteria-weight">10 คะแนน</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="glass-card tech-card">
+                <h2><i class="fa-solid fa-screwdriver-wrench"></i> เครื่องมือที่ใช้ (Tech Stack)</h2>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <i class="fa-solid fa-spider tech-icon"></i>
+                        <h4>Apify Scraper</h4>
+                        <p>ดูดข้อมูลร้านอาหาร Google Maps อย่างถูกวิธี</p>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fa-solid fa-file-excel tech-icon"></i>
+                        <h4>Google Sheets</h4>
+                        <p>จัดเก็บและคัดแยกแท็บ Raw และ Clean data</p>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fa-solid fa-brain tech-icon"></i>
+                        <h4>Gemini 3.5 Flash</h4>
+                        <p>วิเคราะห์ข้อมูล ให้คะแนน และสรุปประเด็นตัดสินใจ</p>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fa-solid fa-network-wired tech-icon"></i>
+                        <h4>n8n Automation</h4>
+                        <p>รันไปป์ไลน์คำนวณคะแนนร้านค้าทันทีเมื่อเพิ่มร้านใหม่</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ask AI Mode Section -->
+        <section class="ask-ai-section">
+            <div class="glass-card ask-ai-card" style="margin-bottom: 40px;">
+                <div class="ask-ai-header" style="margin-bottom: 20px;">
+                    <h2 style="font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-solid fa-robot text-gold animate-bounce-custom" style="color: var(--accent);"></i>
+                        ถาม AI Food Assistant (Ask AI Mode)
+                    </h2>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">พิมพ์คุยสอบถามร้านที่เหมาะสมสำหรับทีมของคุณ โดย AI จะอ้างอิงและค้นหาจากฐานข้อมูลร้านค้าโดยตรง</p>
+                </div>
+                <div class="chat-container">
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message system-message">
+                            สวัสดีครับ! ผมคือ AI Food Assistant ประจำบอร์ดนี้ คุณสามารถถามคำถามเจาะจงได้เลย เช่น <strong>"แนะนำร้านชาบูในอารีย์สำหรับเลี้ยงทีมหน่อย"</strong> หรือ <strong>"ในสยามมีร้านไหนเป็นราคาประหยัดและติดบีทีเอสบ้าง"</strong> ผมจะช่วยวิเคราะห์ข้อมูลจริงในตารางให้ทันทีครับ!
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chat-input" placeholder="พิมพ์ถามร้านค้าที่ต้องการค้นหาตรงนี้..." />
+                        <button id="btn-chat-send" class="btn btn-chat-send">
+                            <i class="fa-solid fa-paper-plane"></i> ส่งคำถาม
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Human Review Queue Section -->
+        <section class="human-review-section">
+            <div class="glass-card review-queue-card" style="margin-bottom: 40px;">
+                <div class="queue-header" style="margin-bottom: 20px;">
+                    <h2 style="font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-solid fa-user-check" style="color: var(--accent);"></i>
+                        Human Review Queue (คิวตรวจสอบร้านค้าที่มีรีวิวน้อย)
+                    </h2>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">ระบบดักจับร้านอาหารที่จำนวนรีวิวน้อยกว่า 150 รีวิว เพื่อให้คนสแกนรีวิวจริงประกอบการตัดสินใจและให้ความคุ้มครองความแม่นยำขั้นสุดท้าย (Human-in-the-loop)</p>
+                </div>
+                <div class="queue-container">
+                    <div class="table-responsive">
+                        <table class="ranking-table queue-table">
+                            <thead>
+                                <tr>
+                                    <th>ชื่อร้านอาหาร</th>
+                                    <th>ย่านพื้นที่</th>
+                                    <th>ประเภทอาหาร</th>
+                                    <th class="text-center">รีวิว (ครั้ง)</th>
+                                    <th class="text-center">คะแนน AI</th>
+                                    <th class="text-center">ลิงก์ Google Maps</th>
+                                    <th class="text-center">การตัดสินใจของคน</th>
+                                </tr>
+                            </thead>
+                            <tbody id="queue-body">
+                                <tr>
+                                    <td colspan="7" class="text-center" style="color: var(--text-muted); padding: 30px;">
+                                        กำลังโหลดรายการคิวตรวจสอบรีวิวต่ำ...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Project Objectives & Workflow -->
+        <section class="overview-section" style="margin-bottom: 40px;">
+            <div class="glass-card objective-card">
+                <h2><i class="fa-solid fa-bullseye section-icon"></i> เป้าหมายโครงการ (Objective)</h2>
+                <p>
+                    พัฒนา **AI Workflow** ที่โปร่งใสและใช้ข้อมูลจริง เพื่อตอบคำถามสำคัญ: 
+                    <strong class="highlight-text">"หากต้องเลือกร้านอาหาร 1–3 ร้าน สำหรับจัดมื้อค่ำทีมขนาด 8-12 คน ในย่านธุรกิจหลัก ร้านไหนตอบโจทย์และมีความคุ้มค่าสูงสุด?"</strong>
+                    โดยรวบรวมข้อมูลผ่านการ Scrape จริง วิเคราะห์และให้คะแนนด้วยโมเดล 100 คะแนนเต็มด้วย AI
+                </p>
+                <div class="evidence-links">
+                    <a href="https://docs.google.com/spreadsheets/d/1XW999999999-PLACEHOLDER/edit?usp=sharing" target="_blank" class="btn btn-secondary" id="sheet-link">
+                        <i class="fa-solid fa-table-list"></i> ลิงก์ Google Sheets ข้อมูลการทดสอบ
+                    </a>
+                </div>
+            </div>
+
+            <div class="glass-card workflow-card">
+                <h2><i class="fa-solid fa-network-wired section-icon"></i> กระบวนการทำงาน (Workflow Overview)</h2>
+                <div class="workflow-steps">
+                    <div class="step">
+                        <div class="step-num">1</div>
+                        <h3>Scraping</h3>
+                        <p>ดึงข้อมูลดิบ 100 ร้านจาก Google Maps ผ่าน Apify</p>
+                    </div>
+                    <div class="step-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                    <div class="step">
+                        <div class="step-num">2</div>
+                        <h3>Data Storage</h3>
+                        <p>เก็บบันทึกลง Google Sheets แยกแท็บดิบ/คลีน</p>
+                    </div>
+                    <div class="step-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                    <div class="step">
+                        <div class="step-num">3</div>
+                        <h3>AI Scoring</h3>
+                        <p>Gemini 3.5 Flash ให้คะแนนตามเกณฑ์ 100 แต้ม</p>
+                    </div>
+                    <div class="step-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                    <div class="step">
+                        <div class="step-num">4</div>
+                        <h3>n8n Pipeline</h3>
+                        <p>เชื่อม Google Sheets อัปเดตข้อมูลและคำนวณคะแนน</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Exam Reflection -->
+        <section class="reflection-section">
+            <div class="glass-card reflection-card">
+                <h2><i class="fa-solid fa-comment-dots"></i> บทสรุปและการเรียนรู้ (Reflection)</h2>
+                <div class="reflection-content">
+                    <p><strong>ผลลัพธ์การทำงาน:</strong> ระบบสามารถรวบรวมร้านอาหารได้ครอบคลุมทั้ง 5 ย่าน รวม 100 ร้านค้า มีการคัดกรองข้อมูลดิบที่ไม่สมบูรณ์และตัดรายการที่ไม่เกี่ยวข้องออกได้ 100% ด้วยการเขียนเงื่อนไขตรวจสอบข้อมูล (Data Completeness Check) และการจัดประเภท (Categorization) บน AI</p>
+                    <p><strong>ปัญหาและอุปสรรคที่พบ:</strong> ในตอนแรกการรันบอท Scraper ค้นหาในเขตกรุงเทพฯ เกิดปัญหาการระบุพิกัดตำแหน่งผิดพลาดเนื่องจาก encoding ของภาษาไทยเพี้ยนในขั้นตอนการส่ง JSON ในคำสั่งเบื้องหลัง ทำให้คีย์เวิร์ดเพี้ยนและค้นหาได้สถานศึกษา/หน่วยงานแทนร้านอาหาร การแก้ไขทำได้โดยสร้างไฟล์ตั้งค่า JSON ในรหัส UTF-8 ที่ไม่มี BOM (Byte Order Mark) และเรียกใช้ผ่าน `curl.exe` โดยตรง ทำให้สามารถระบุพิกัดของกรุงเทพมหานครได้ถูกต้อง 100%</p>
+                    <p><strong>การพัฒนาต่อยอด:</strong> ในอนาคตสามารถต่อยอดโดยเชื่อม API ของแพลตฟอร์มจองโต๊ะ (เช่น HungryHub หรือ Eatigo) เพื่อดูสถานะโต๊ะว่างสำหรับกลุ่ม 8-12 คนแบบเรียลไทม์ และส่งข้อมูลสรุปตรงไปยังห้องแชทของกลุ่มเป้าหมายในทันที</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="main-footer">
+            <p>&copy; 2026 AI Food Assistant Project. พัฒนาขึ้นสำหรับการสอบวัดผล AI Workflow</p>
+        </footer>
+    </div>
+
+    <!-- Script links -->
+    <script src="data.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>
