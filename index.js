@@ -318,7 +318,7 @@ function renderDashboard(district) {
         const consHtml = cons.map(con => `<li><i class="fa-solid fa-circle-xmark"></i><span>${con}</span></li>`).join("");
 
         const compHtml = `
-            <div class="glass-card comparison-card">
+            <div class="glass-card comparison-card comparison-rank-${index + 1}">
                 <h3>อันดับ ${index + 1}: ${item.title}</h3>
                 <ul class="comp-list comp-pros">
                     ${prosHtml}
