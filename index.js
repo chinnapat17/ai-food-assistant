@@ -219,10 +219,10 @@ function renderDashboard(district) {
         const phoneText = item.phone && item.phone !== "phone" ? `<div class="detail-row"><i class="fa-solid fa-phone"></i><span>${item.phone}</span></div>` : "";
         
         const cardHtml = `
-            <div class="glass-card recommendation-card">
-                <div class="card-badge"><i class="fa-solid fa-trophy"></i> อันดับ ${index + 1}</div>
+            <div class="glass-card recommendation-card recommendation-rank-${index + 1}">
                 <div class="card-top">
                     <div class="card-title-area">
+                        <div class="card-badge badge-rank-${index + 1}"><i class="fa-solid fa-trophy"></i> อันดับ ${index + 1}</div>
                         <h3>${item.title}</h3>
                         <span class="card-category">${item.category || "ร้านอาหาร"}</span>
                         <div style="margin-top: 6px;"><span class="scenario-badge">${getScenarioTextAndIcon(item)}</span></div>

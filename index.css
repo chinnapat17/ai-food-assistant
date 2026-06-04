@@ -362,19 +362,85 @@ body {
     flex-direction: column;
 }
 
+/* Card Rank Badges & Spacings */
 .card-badge {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    background: var(--gold);
-    color: #000;
-    padding: 5px 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
     border-radius: 30px;
     font-weight: 700;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     text-transform: uppercase;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
-    z-index: 10;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    margin-bottom: 12px; /* Gap between badge and name */
+    width: fit-content;
+}
+
+/* Rank 1 Specific Theme */
+.badge-rank-1 {
+    background: linear-gradient(135deg, #ffe066 0%, #f5b041 100%);
+    color: #070a13;
+    box-shadow: 0 0 15px rgba(245, 176, 65, 0.4);
+}
+
+.recommendation-rank-1 {
+    border: 1px solid rgba(245, 176, 65, 0.35) !important;
+    background: linear-gradient(180deg, rgba(15, 22, 42, 0.7) 0%, rgba(245, 176, 65, 0.05) 100%) !important;
+}
+
+.recommendation-rank-1::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ffe066, #f5b041);
+}
+
+/* Rank 2 Specific Theme */
+.badge-rank-2 {
+    background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%);
+    color: #070a13;
+    box-shadow: 0 0 12px rgba(148, 163, 184, 0.25);
+}
+
+.recommendation-rank-2 {
+    border: 1px solid rgba(148, 163, 184, 0.2) !important;
+    background: linear-gradient(180deg, rgba(15, 22, 42, 0.7) 0%, rgba(148, 163, 184, 0.03) 100%) !important;
+}
+
+.recommendation-rank-2::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #e2e8f0, #94a3b8);
+}
+
+/* Rank 3 Specific Theme */
+.badge-rank-3 {
+    background: linear-gradient(135deg, #edbb99 0%, #dc7633 100%);
+    color: #070a13;
+    box-shadow: 0 0 12px rgba(220, 118, 51, 0.25);
+}
+
+.recommendation-rank-3 {
+    border: 1px solid rgba(220, 118, 51, 0.2) !important;
+    background: linear-gradient(180deg, rgba(15, 22, 42, 0.7) 0%, rgba(220, 118, 51, 0.03) 100%) !important;
+}
+
+.recommendation-rank-3::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #edbb99, #dc7633);
 }
 
 .card-top {
@@ -382,7 +448,7 @@ body {
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 20px;
-    margin-top: 15px;
+    margin-top: 0;
 }
 
 .card-title-area {
@@ -877,14 +943,13 @@ body {
         border-radius: 16px;
     }
     .card-badge {
-        top: 12px;
-        left: 12px;
         padding: 4px 10px;
         font-size: 0.75rem;
+        margin-bottom: 8px; /* Slightly tighter gap on mobile */
     }
     .card-top {
         margin-bottom: 12px;
-        margin-top: 25px; /* Leave space for absolute badge */
+        margin-top: 0; /* Reset top margin since badge is in the flow */
     }
     .card-title-area h3 {
         font-size: 1.15rem;
