@@ -282,22 +282,22 @@ function renderDashboard(district) {
         
         const rowHtml = `
             <tr class="${isTop3 ? 'top-3-row' : ''}">
-                <td class="text-center">
+                <td class="text-center" data-label="อันดับ">
                     <span class="rank-badge ${rankClass}">${index + 1}</span>
                 </td>
-                <td>
+                <td data-label="ชื่อร้าน">
                     <span class="restaurant-name">${item.title}</span>
                 </td>
-                <td>${item.category || "ร้านอาหาร"}</td>
-                <td class="text-center cell-score">${item.totalScore}</td>
-                <td class="text-center"><i class="fa-solid fa-star text-gold"></i> ${rating}</td>
-                <td class="text-center">${reviews}</td>
-                <td class="text-center">${item.priceRange || "฿200-400"}</td>
-                <td style="font-size: 0.9rem;">
+                <td data-label="ประเภท">${item.category || "ร้านอาหาร"}</td>
+                <td class="text-center cell-score" data-label="คะแนนรวม">${item.totalScore}</td>
+                <td class="text-center" data-label="เรตติ้ง"><i class="fa-solid fa-star text-gold"></i> ${rating}</td>
+                <td class="text-center" data-label="รีวิว (ครั้ง)">${reviews}</td>
+                <td class="text-center" data-label="ช่วงราคา">${item.priceRange || "฿200-400"}</td>
+                <td style="font-size: 0.9rem;" data-label="คำแนะนำเพิ่มเติมและทำเลที่ตั้ง">
                     <strong>${item.suitabilityNotes}</strong>
                     <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">${item.address ? item.address.substring(0, 75) + '...' : ''} (ย่าน ${item.district})</div>
                 </td>
-                <td class="text-center">
+                <td class="text-center" data-label="แผนที่">
                     <a href="${item.url || '#'}" target="_blank" class="map-link">
                         <i class="fa-solid fa-location-arrow"></i>
                     </a>
@@ -448,17 +448,17 @@ function renderQueue(data) {
         
         const rowHtml = `
             <tr>
-                <td><strong>${item.title}</strong></td>
-                <td><span class="badge badge-accent">${item.district}</span></td>
-                <td>${item.category || "ร้านอาหาร"}</td>
-                <td class="text-center cell-score" style="color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> ${item.reviewsCount}</td>
-                <td class="text-center cell-score">${item.totalScore}</td>
-                <td class="text-center">
+                <td data-label="ชื่อร้าน"><strong>${item.title}</strong></td>
+                <td data-label="ย่านพื้นที่"><span class="badge badge-accent">${item.district}</span></td>
+                <td data-label="ประเภท">${item.category || "ร้านอาหาร"}</td>
+                <td class="text-center cell-score" style="color: #ef4444;" data-label="รีวิว (ครั้ง)"><i class="fa-solid fa-triangle-exclamation"></i> ${item.reviewsCount}</td>
+                <td class="text-center cell-score" data-label="คะแนน AI">${item.totalScore}</td>
+                <td class="text-center" data-label="ลิงก์ Google Maps">
                     <a href="${item.url || '#'}" target="_blank" class="map-link btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 5px;">
                         <i class="fa-solid fa-up-right-from-square"></i> อ่านรีวิวจริง
                     </a>
                 </td>
-                <td class="text-center">
+                <td class="text-center" data-label="การตัดสินใจของคน">
                     <div class="decision-container">
                         <button class="btn-decision approve ${savedDecision === 'approve' ? 'active' : ''}" onclick="saveDecision('${item.placeId}', 'approve')">Approve</button>
                         <button class="btn-decision pending ${savedDecision === 'pending' ? 'active' : ''}" onclick="saveDecision('${item.placeId}', 'pending')">Pending</button>

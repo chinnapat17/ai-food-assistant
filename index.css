@@ -798,37 +798,588 @@ body {
     }
 }
 
-@media (max-width: 768px) {
-    .main-header {
-        flex-direction: column;
-        align-items: flex-start;
+/* ==========================================
+   Premium Mobile Responsiveness & Spacing Fixes
+   ========================================== */
+@media (max-width: 1024px) {
+    .cards-grid, .comparison-grid {
+        grid-template-columns: repeat(2, 1fr);
         gap: 20px;
     }
-    .header-meta {
-        align-self: flex-start;
-        align-items: flex-start;
-        width: 100%;
-        justify-content: space-between;
+    .overview-section, .details-grid-section {
+        grid-template-columns: 1fr;
+        gap: 20px;
     }
+    .tech-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 15px 10px;
+    }
+    .main-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 15px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    .header-logo {
+        flex-direction: row;
+        align-items: center;
+        gap: 15px;
+    }
+    .logo-icon {
+        font-size: 2.2rem;
+    }
+    .logo-text h1 {
+        font-size: 1.5rem;
+    }
+    .logo-text p {
+        font-size: 0.8rem;
+    }
+    .header-meta {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    /* Horizontal Scrollable Tabs - App Style */
+    .tabs-container {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        white-space: nowrap;
+        gap: 8px;
+        padding: 6px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+    }
+    .tabs-container::-webkit-scrollbar {
+        display: none; /* Chrome/Safari */
+    }
+    .tab-btn {
+        flex: 0 0 auto;
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+
     .cards-grid, .comparison-grid {
         grid-template-columns: 1fr;
+        gap: 15px;
     }
-    .tabs-container {
-        flex-direction: column;
-        gap: 5px;
+    
+    /* Tighten Recommendation Cards on Mobile */
+    .recommendation-card {
+        padding: 16px 12px !important;
+        border-radius: 16px;
     }
+    .card-badge {
+        top: 12px;
+        left: 12px;
+        padding: 4px 10px;
+        font-size: 0.75rem;
+    }
+    .card-top {
+        margin-bottom: 12px;
+        margin-top: 25px; /* Leave space for absolute badge */
+    }
+    .card-title-area h3 {
+        font-size: 1.15rem;
+    }
+    .score-circle {
+        width: 52px;
+        height: 52px;
+        border-width: 2px;
+    }
+    .score-num {
+        font-size: 1.1rem;
+    }
+    .score-max {
+        font-size: 0.6rem;
+    }
+    .card-stats {
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+        gap: 12px;
+    }
+    .stat-item {
+        font-size: 0.8rem;
+    }
+    .suitability-box {
+        padding: 10px 12px;
+        margin-bottom: 12px;
+        border-radius: 0 8px 8px 0;
+    }
+    .suitability-box h4 {
+        font-size: 0.8rem;
+    }
+    .suitability-box p {
+        font-size: 0.85rem;
+    }
+    .card-details {
+        gap: 6px;
+        margin-bottom: 15px;
+    }
+    .detail-row {
+        gap: 6px;
+    }
+    .detail-row span {
+        font-size: 0.8rem;
+    }
+    
+    /* Comparison Cards on Mobile */
+    .comparison-card {
+        padding: 16px 12px !important;
+        border-radius: 16px;
+        gap: 10px;
+    }
+    .comparison-card h3 {
+        font-size: 1.1rem;
+        padding-bottom: 8px;
+    }
+    .comp-list {
+        gap: 8px;
+    }
+    .comp-list li {
+        font-size: 0.85rem;
+        gap: 8px;
+    }
+    
+    /* Filter Panel on Mobile */
+    .filter-panel {
+        padding: 12px;
+        margin-top: 12px !important;
+        margin-bottom: 15px;
+    }
+    .filter-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    .filter-item {
+        gap: 4px;
+    }
+    .filter-item label {
+        font-size: 0.75rem;
+    }
+    .filter-select {
+        padding: 8px;
+        font-size: 0.8rem;
+    }
+
     .workflow-steps {
         flex-direction: column;
-        gap: 15px;
+        gap: 12px;
+        margin-top: 15px;
     }
     .step-arrow {
         transform: rotate(90deg);
-        margin: 5px 0;
+        margin: 2px 0;
+        font-size: 0.9rem;
     }
-    .dashboard-container {
-        padding: 20px 10px;
+    .step {
+        padding: 5px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .step-num {
+        width: 30px;
+        height: 30px;
+        line-height: 28px;
+        font-size: 0.95rem;
+        margin-bottom: 6px;
+    }
+    .step h3 {
+        font-size: 0.9rem;
+    }
+    .step p {
+        font-size: 0.75rem;
+    }
+
+    /* General Spacing Reductions */
+    .navigation-section, 
+    .recommendations-section, 
+    .ranking-section, 
+    .comparison-section, 
+    .details-grid-section, 
+    .ask-ai-section, 
+    .human-review-section, 
+    .overview-section, 
+    .reflection-section {
+        margin-bottom: 20px !important;
+    }
+    .glass-card {
+        padding: 16px 12px;
+        border-radius: 16px;
+    }
+    .section-header {
+        margin-bottom: 12px;
+        text-align: center;
+    }
+    .section-header h2 {
+        font-size: 1.25rem;
+        justify-content: center;
+        gap: 8px;
+    }
+    .section-header p {
+        font-size: 0.8rem;
+    }
+    .ask-ai-header, .queue-header {
+        margin-bottom: 12px;
+        text-align: center;
+    }
+    .ask-ai-header h2, .queue-header h2 {
+        font-size: 1.25rem;
+        justify-content: center;
+        gap: 8px;
+    }
+    .ask-ai-header p, .queue-header p {
+        font-size: 0.8rem;
+        margin-top: 3px;
+    }
+
+    /* ======================================================
+       Transform Tables into Cards Layout on Mobile screens
+       ====================================================== */
+    
+    /* 1. Top 10 Ranking Table */
+    .ranking-table, 
+    .ranking-table thead, 
+    .ranking-table tbody, 
+    .ranking-table tr, 
+    .ranking-table td {
+        display: block;
+        width: 100%;
+    }
+    
+    .ranking-table thead {
+        display: none; /* Hide header row on mobile */
+    }
+    
+    .ranking-table tbody tr {
+        background: rgba(15, 22, 42, 0.4);
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        padding: 14px;
+        margin-bottom: 12px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    
+    .ranking-table tbody tr:hover {
+        border-color: rgba(var(--accent-rgb), 0.3);
+    }
+    
+    .ranking-table tbody tr.top-3-row {
+        background: rgba(var(--accent-rgb), 0.03);
+        border-color: rgba(var(--accent-rgb), 0.25);
+    }
+    
+    .ranking-table td {
+        padding: 0 !important;
+        border: none !important;
+        text-align: left !important;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        font-size: 0.85rem;
+    }
+
+    /* Rank badge style */
+    .ranking-table td[data-label="อันดับ"] {
+        justify-content: flex-start;
+        border-bottom: 1px solid var(--card-border) !important;
+        padding-bottom: 8px !important;
+        margin-bottom: 2px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .ranking-table td[data-label="อันดับ"]::before {
+        content: "อันดับร้านค้า";
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+    }
+    
+    /* Restaurant Name */
+    .ranking-table td[data-label="ชื่อร้าน"] {
+        justify-content: flex-start;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #fff;
+    }
+    
+    .ranking-table td[data-label="ชื่อร้าน"]::before {
+        display: none;
+    }
+
+    /* General label styling for each row element */
+    .ranking-table td[data-label="ประเภท"]::before,
+    .ranking-table td[data-label="คะแนนรวม"]::before,
+    .ranking-table td[data-label="เรตติ้ง"]::before,
+    .ranking-table td[data-label="รีวิว (ครั้ง)"]::before,
+    .ranking-table td[data-label="ช่วงราคา"]::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+    }
+    
+    /* Score */
+    .ranking-table td[data-label="คะแนนรวม"] {
+        background: rgba(var(--accent-rgb), 0.08);
+        padding: 6px 12px !important;
+        border-radius: 8px;
+    }
+    
+    /* Recommendation Notes and Address */
+    .ranking-table td[data-label="คำแนะนำเพิ่มเติมและทำเลที่ตั้ง"] {
+        display: block;
+        background: rgba(255, 255, 255, 0.02);
+        padding: 10px !important;
+        border-radius: 10px;
+        margin-top: 4px;
+        border-left: 3px solid var(--accent) !important;
+    }
+    
+    .ranking-table td[data-label="คำแนะนำเพิ่มเติมและทำเลที่ตั้ง"]::before {
+        content: "คำแนะนำเพิ่มเติมและทำเลที่ตั้ง";
+        display: block;
+        font-weight: 600;
+        color: var(--accent);
+        font-size: 0.75rem;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .ranking-table td[data-label="คำแนะนำเพิ่มเติมและทำเลที่ตั้ง"] strong {
+        font-size: 0.85rem;
+        display: block;
+        line-height: 1.4;
+    }
+    
+    .ranking-table td[data-label="คำแนะนำเพิ่มเติมและทำเลที่ตั้ง"] div {
+        font-size: 0.75rem !important;
+        margin-top: 4px !important;
+    }
+    
+    /* Map link button */
+    .ranking-table td[data-label="แผนที่"] {
+        justify-content: center;
+        margin-top: 8px;
+    }
+    
+    .ranking-table td[data-label="แผนที่"]::before {
+        display: none;
+    }
+    
+    .ranking-table td[data-label="แผนที่"] a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: rgba(var(--accent-rgb), 0.1);
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    
+    .ranking-table td[data-label="แผนที่"] a::after {
+        content: " ดูตำแหน่งบน Google Maps";
+    }
+
+    /* 2. Human Review Queue Table */
+    .queue-table,
+    .queue-table thead,
+    .queue-table tbody,
+    .queue-table tr,
+    .queue-table td {
+        display: block;
+        width: 100%;
+    }
+    
+    .queue-table thead {
+        display: none;
+    }
+    
+    .queue-table tbody tr {
+        background: rgba(15, 22, 42, 0.4);
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        padding: 14px;
+        margin-bottom: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .queue-table td {
+        padding: 0 !important;
+        border: none !important;
+        text-align: left !important;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        font-size: 0.85rem;
+    }
+    
+    .queue-table td[data-label="ชื่อร้าน"] {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #fff;
+        justify-content: flex-start;
+        border-bottom: 1px solid var(--card-border) !important;
+        padding-bottom: 8px !important;
+        margin-bottom: 2px;
+    }
+    
+    .queue-table td[data-label="ชื่อร้าน"]::before {
+        display: none;
+    }
+    
+    .queue-table td[data-label="ย่านพื้นที่"]::before,
+    .queue-table td[data-label="ประเภท"]::before,
+    .queue-table td[data-label="รีวิว (ครั้ง)"]::before,
+    .queue-table td[data-label="คะแนน AI"]::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+    }
+    
+    .queue-table td[data-label="ลิงก์ Google Maps"] {
+        justify-content: center;
+        margin-top: 5px;
+    }
+    
+    .queue-table td[data-label="ลิงก์ Google Maps"]::before {
+        display: none;
+    }
+    
+    .queue-table td[data-label="ลิงก์ Google Maps"] a {
+        width: 100%;
+        justify-content: center;
+        padding: 10px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        margin: 0;
+    }
+    
+    .queue-table td[data-label="การตัดสินใจของคน"] {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        margin-top: 5px;
+        padding-top: 10px !important;
+        border-top: 1px solid var(--card-border) !important;
+    }
+    
+    .queue-table td[data-label="การตัดสินใจของคน"]::before {
+        content: "การประเมินโดยมนุษย์ (Human Evaluation)";
+        display: block;
+        font-weight: 600;
+        color: var(--accent);
+        font-size: 0.75rem;
+        text-align: left;
+        margin-bottom: 2px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .queue-table .decision-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        width: 100%;
+    }
+    
+    .queue-table .btn-decision {
+        margin: 0;
+        padding: 8px 4px;
+        font-size: 0.8rem;
+        text-align: center;
+        border-radius: 8px;
+    }
+    
+    .queue-table td[data-label="การตัดสินใจของคน"] > div:last-child {
+        display: flex;
+        justify-content: center;
+        margin-top: 2px;
+    }
+
+    /* Chat Area Compactness */
+    .chat-container {
+        height: 320px;
+    }
+    .message {
+        max-width: 90%;
+        padding: 10px 14px;
+        font-size: 0.85rem;
+    }
+    .chat-messages {
+        padding: 12px;
+        gap: 10px;
+    }
+    .chat-input-area {
+        padding: 10px;
+        gap: 10px;
+    }
+    .chat-input-area input {
+        padding: 10px;
+        font-size: 0.85rem;
+    }
+    .btn-chat-send {
+        padding: 0 15px;
+        font-size: 0.85rem;
     }
 }
+
+@media (max-width: 480px) {
+    .header-logo {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+    .logo-icon {
+        font-size: 2rem;
+    }
+    .logo-text h1 {
+        font-size: 1.35rem;
+    }
+    .logo-text p {
+        font-size: 0.75rem;
+    }
+    .filter-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    .tech-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    .btn {
+        padding: 10px 18px;
+        font-size: 0.85rem;
+    }
+}
+
 
 /* ==========================================
    New Features Styling
@@ -925,6 +1476,28 @@ body {
 }
 
 /* 4. Ask AI Chat styling */
+.ask-ai-header, .queue-header {
+    margin-bottom: 20px;
+}
+
+.ask-ai-header h2, .queue-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ask-ai-header h2 i, .queue-header h2 i {
+    color: var(--accent);
+}
+
+.ask-ai-header p, .queue-header p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-top: 5px;
+}
+
 .chat-container {
     display: flex;
     flex-direction: column;
