@@ -1,0 +1,359 @@
+{
+  "name": "AI Restaurant Scoring Pipeline (Gemini 3.5 Flash)",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1ZzkZkhTLydVpw4I3JGyqaxFNbDOsVp54TFGHd1cMhFI",
+          "mode": "list",
+          "cachedResultName": "AI Food Assistant - [Chinnapat]",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ZzkZkhTLydVpw4I3JGyqaxFNbDOsVp54TFGHd1cMhFI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 860610362,
+          "mode": "list",
+          "cachedResultName": "Raw Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ZzkZkhTLydVpw4I3JGyqaxFNbDOsVp54TFGHd1cMhFI/edit#gid=860610362"
+        },
+        "options": {}
+      },
+      "id": "3f90e145-d4cc-4a03-9f9f-af9cbc28117a",
+      "name": "Google Sheets Trigger (Raw Data)",
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        304,
+        48
+      ],
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "Z2e7g2V4t8BR1Jt8",
+          "name": "Google Sheets Trigger account 15"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=AQ.Ab8RN6KkfnBKz8URb6XM4dC7KhgeH7CKhxWhxuZ9jZxnoOkNow",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  contents: [\n    {\n      parts: [\n        {\n          text: \"You are a local food critic and data analyst in Bangkok. Score this restaurant for a team dinner of 8-12 people based on its properties:\\nTitle: \" + ($json.title || \"\") + \"\\nCategory: \" + ($json.categoryName || \"\") + \"\\nRating: \" + ($json.totalScore || \"\") + \"\\nReviews: \" + ($json.reviewsCount || 0) + \"\\nPrice: \" + ($json.price || \"\") + \"\\nAddress: \" + ($json.address || \"\") + \"\\n\\nCalculate the scores according to these rules:\\n1. ratingScore (Max 25): (Rating / 5) * 15 + (log10(Reviews) / log10(5000)) * 10, capped at 10.\\n2. groupSuitabilityScore (Max 20): Evaluate if the type of food, space, and category is suitable for a team of 8-12 (e.g. Shabu, BBQ, big Thai tables score 17-20. Small coffee shops or noodle stalls score 5-10).\\n3. priceSuitabilityScore (Max 15): Moderate price is 15, very cheap is 10, very expensive is 8.\\n4. travelConvenienceScore (Max 15): Distance from BTS/MRT (e.g., 15 for close walk, 8-10 for deep in alleys).\\n5. dataCompletenessScore (Max 15): 2.5 points for each non-empty field (website, phone, address, price, openingHours, url).\\n6. uniquenessScore (Max 10): Michelin, awards, great view, or popularity.\\n\\nSum them to get totalScore. Also write suitabilityNotes in Thai explaining why it fits.\\n\\nRespond ONLY with a JSON object containing these keys:\\nratingScore (number),\\ngroupSuitabilityScore (number),\\npriceSuitabilityScore (number),\\ntravelConvenienceScore (number),\\ndataCompletenessScore (number),\\nuniquenessScore (number),\\ntotalScore (number),\\nsuitabilityNotes (string in Thai)\"\n        }\n      ]\n    }\n  ],\n  generationConfig: {\n    responseMimeType: \"application/json\"\n  }\n}) }}",
+        "options": {}
+      },
+      "id": "87375b9c-70b2-439a-bb7d-093fb7a58ec1",
+      "name": "Call Gemini API (gemini-3.5-flash)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        512,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const responseText = $input.item.json.candidates[0].content.parts[0].text;\nconst scoredData = JSON.parse(responseText);\nconst raw = $node[\"Google Sheets Trigger (Raw Data)\"].json;\n\n// Extract district from searchString\nlet district = \"Ari\";\nconst searchStr = (raw.searchString || \"\").toLowerCase();\nif (searchStr.includes(\"สยาม\") || searchStr.includes(\"siam\")) {\n  district = \"Siam\";\n} else if (searchStr.includes(\"อารีย์\") || searchStr.includes(\"ari\")) {\n  district = \"Ari\";\n} else if (searchStr.includes(\"ทองหล่อ\") || searchStr.includes(\"thonglor\")) {\n  district = \"Thonglor\";\n} else if (searchStr.includes(\"อโศก\") || searchStr.includes(\"asoke\")) {\n  district = \"Asoke\";\n} else if (searchStr.includes(\"พร้อมพงษ์\") || searchStr.includes(\"phrom\")) {\n  district = \"Phrom Phong\";\n}\n\nreturn {\n  json: {\n    placeId: raw.placeId || \"\",\n    title: raw.title || \"\",\n    district: district,\n    category: raw.categoryName || \"ร้านอาหาร\",\n    rating: parseFloat(raw.totalScore) || 3.5,\n    reviewsCount: parseInt(raw.reviewsCount) || 0,\n    priceRange: raw.price || \"฿200-400\",\n    address: raw.address || \"\",\n    website: raw.website || \"\",\n    phone: raw.phone || \"\",\n    openingHours: raw.openingHours || \"\",\n    url: raw.url || \"\",\n    ratingScore: parseFloat(scoredData.ratingScore) || 0,\n    groupSuitabilityScore: parseFloat(scoredData.groupSuitabilityScore) || 0,\n    priceSuitabilityScore: parseFloat(scoredData.priceSuitabilityScore) || 0,\n    travelConvenienceScore: parseFloat(scoredData.travelConvenienceScore) || 0,\n    dataCompletenessScore: parseFloat(scoredData.dataCompletenessScore) || 0,\n    uniquenessScore: parseFloat(scoredData.uniquenessScore) || 0,\n    totalScore: parseFloat(scoredData.totalScore) || 0,\n    suitabilityNotes: scoredData.suitabilityNotes || \"คำนวณคะแนนผ่าน Gemini\"\n  }\n};"
+      },
+      "id": "5c1bfc93-d74d-4046-a595-ff5cf711f39d",
+      "name": "Parse Gemini Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        704,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1ZzkZkhTLydVpw4I3JGyqaxFNbDOsVp54TFGHd1cMhFI",
+          "mode": "list",
+          "cachedResultName": "AI Food Assistant - [Chinnapat]",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ZzkZkhTLydVpw4I3JGyqaxFNbDOsVp54TFGHd1cMhFI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1428504474,
+          "mode": "list",
+          "cachedResultName": "Clean & Scored Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ZzkZkhTLydVpw4I3JGyqaxFNbDOsVp54TFGHd1cMhFI/edit#gid=1428504474"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "placeId"
+          ],
+          "schema": [
+            {
+              "id": "placeId",
+              "displayName": "placeId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "district",
+              "displayName": "district",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "rating",
+              "displayName": "rating",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reviewsCount",
+              "displayName": "reviewsCount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "priceRange",
+              "displayName": "priceRange",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "address",
+              "displayName": "address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "website",
+              "displayName": "website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "openingHours",
+              "displayName": "openingHours",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ratingScore",
+              "displayName": "ratingScore",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "groupSuitabilityScore",
+              "displayName": "groupSuitabilityScore",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "priceSuitabilityScore",
+              "displayName": "priceSuitabilityScore",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "travelConvenienceScore",
+              "displayName": "travelConvenienceScore",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "dataCompletenessScore",
+              "displayName": "dataCompletenessScore",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "uniquenessScore",
+              "displayName": "uniquenessScore",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "totalScore",
+              "displayName": "totalScore",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "suitabilityNotes",
+              "displayName": "suitabilityNotes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "a605bd7b-a5ef-4c72-9b89-501f019d79d6",
+      "name": "Write to Scored Data",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        912,
+        48
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Q71JJKIaPFk32DDP",
+          "name": "Google Sheets account 162"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger (Raw Data)": {
+      "main": [
+        [
+          {
+            "node": "Call Gemini API (gemini-3.5-flash)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Gemini API (gemini-3.5-flash)": {
+      "main": [
+        [
+          {
+            "node": "Parse Gemini Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Gemini Response": {
+      "main": [
+        [
+          {
+            "node": "Write to Scored Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "8c90070f-0390-4355-b9c5-318a4904041f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "702c22e5b95c07a83973836b08ce39815d85ec88d3a244e025938f0a486d1f6f"
+  },
+  "id": "EZcfBR0oD37N5gqx",
+  "tags": []
+}
